@@ -134,18 +134,19 @@ public class LinkedList implements OOSELinkedList {
         LinkedListNode<Double> newNode = new LinkedListNode<>(d);
         LinkedListNode<Double> currentNode;
 
-        System.out.println("Start adding node: " + newNode.getValue());
-        System.out.println("with index: " + index +" and size: "+ size);
-
+        System.out.println("starting to add node with value: " + d);
+        System.out.println("node with index: " + index);
+        System.out.println("size is : " + size);
 
         //check for boundaries
         if(index > size || index < 0){
-            throw new IndexOutOfBoundsException("index is bigger than size of the list");
+            System.out.println("index is : " + index);
+            System.out.println("size is : " + size);
+            throw new IndexOutOfBoundsException("index is bigger than size of the list!");
         }
 
         //start at head if index is small
         if(index < size/2){
-            System.out.println("Starting from head: " + head.getValue());
             currentNode = head;
             for(int i = 0 ; i < index ; i++){
                 if(currentNode.hasNext()){
@@ -166,21 +167,17 @@ public class LinkedList implements OOSELinkedList {
             if(head == null){ //create first node
                 head = newNode;
                 tail = head;
-                System.out.println("created first node: " + head.getValue());
-                System.out.println("created tail node: " + tail.getValue());
             }
             else{
                 //new tail
                 tail.setNext(newNode);
                 newNode.setPrevious(tail);
                 tail = newNode;
-                System.out.println("created tail node: " + tail.getValue());
             }
         }
 
         //start at tail if index is big
         else{
-            System.out.println("Starting from tail: " + tail.getValue());
             currentNode = tail;
             for(int i = index; i < size ; i++){
                 if(currentNode.hasPrevious()){
@@ -196,7 +193,6 @@ public class LinkedList implements OOSELinkedList {
             newNode.setPrevious(currentNode);
         }
         ++size;
-        System.out.println("current size: " + size);
     }
 
 
@@ -209,8 +205,10 @@ public class LinkedList implements OOSELinkedList {
      */
     @Override
     public void removeFirst() {
-        if(size == 0){
-            throw new IndexOutOfBoundsException("List is empty, nothing to remove");
+        if(head == null){
+            //according to the test this should not throw exception???
+            //throw new IndexOutOfBoundsException("List is empty, nothing to remove");
+            return;
         }
         else{
             if(head.hasNext()){ //if there is more than 1 element
@@ -234,6 +232,24 @@ public class LinkedList implements OOSELinkedList {
      */
     @Override
     public void removeLast() {
+
+        if(tail == null){
+            //according to the test this should not throw exception???
+            //throw new IndexOutOfBoundsException("List is empty, nothing to remove");
+            return;
+        }
+        else{
+            if(tail.hasPrevious()){
+                tail.getPrevious().setNext(null);
+                tail = tail.getPrevious();
+            }
+            else{
+                //there is only 1 element
+                head = null;
+                tail = null;
+            }
+            --size;
+        }
     }
 
     /**
@@ -244,8 +260,74 @@ public class LinkedList implements OOSELinkedList {
      */
     @Override
     public void remove(int index) {
+        System.out.println("removing index:" + index);
+        System.out.println("with size :" + size);
 
+        //check for boundaries
+        if(index > size || index < 0){
+            throw new IndexOutOfBoundsException("index is bigger than size of the list");
+        }
+
+        LinkedListNode<Double> currentNode;
+        if(index <= size/2){
+            System.out.println("Starting from head: " + head.getValue());
+            currentNode = head;
+            for(int i = 0 ; i < index ; i++){
+                if(currentNode.hasNext()){
+                    currentNode = currentNode.getNext();
+                }
+            }
+            System.out.println("removing node with value: " + currentNode.getValue());
+            //removing references to currentNode
+            //this method should never start at head if there is only 1 node
+            System.out.println("testing current: " + currentNode.hasPrevious());
+            if(!currentNode.hasPrevious()){
+                //this is the head
+                if(!currentNode.hasNext()){
+                    //this is also tail = only 1 element in list
+                    head = null;
+                    tail = null;
+                }
+                else{
+                    //new head
+                    LinkedListNode<Double> nextNode = currentNode.getNext();
+                    nextNode.setPrevious(null); //new head
+                    head = nextNode;
+                }
+            }
+            else{
+                LinkedListNode<Double> previousNode = currentNode.getPrevious();
+                LinkedListNode<Double> nextNode = currentNode.getNext();
+                previousNode.setNext(nextNode);
+                nextNode.setPrevious(previousNode);
+            }
+        }
+        else {
+            System.out.println("Starting from tail: " + tail.getValue());
+            currentNode = tail;
+            for(int i = index; i < size-1 ; i++){
+                if(currentNode.hasPrevious()){
+                    currentNode = currentNode.getPrevious();
+                }
+            }
+            System.out.println("removing node with value: " + currentNode.getValue());
+            if(!currentNode.hasNext()){
+                //this is the tail
+                LinkedListNode<Double> previousNode = currentNode.getPrevious();
+                previousNode.setNext(null);
+                tail = previousNode;
+            }
+            else{
+                //dit stukje is herhaalde code, niet blij mee
+                LinkedListNode<Double> previousNode = currentNode.getPrevious();
+                LinkedListNode<Double> nextNode = currentNode.getNext();
+                previousNode.setNext(nextNode);
+                nextNode.setPrevious(previousNode);
+            }
+        }
+        --size;
     }
+
 
 
     /**
@@ -257,6 +339,34 @@ public class LinkedList implements OOSELinkedList {
      */
     @Override
     public void set(int index, Double value) {
+        //check for boundaries
+        if(index > size || index < 0){
+            throw new IndexOutOfBoundsException("index is bigger than size of the list");
+        }
+
+        LinkedListNode<Double> currentNode;
+        if(index <= size/2){
+            System.out.println("Starting from head: " + head.getValue());
+            currentNode = head;
+            for(int i = 0 ; i < index ; i++){
+                if(currentNode.hasNext()){
+                    currentNode = currentNode.getNext();
+                }
+            }
+        }
+        else {
+            System.out.println("Starting from tail: " + tail.getValue());
+            currentNode = tail;
+            for(int i = index; i < size-1 ; i++){
+                if(currentNode.hasPrevious()){
+                    currentNode = currentNode.getPrevious();
+                }
+            }
+        }
+        System.out.println("changing current node with value: " + currentNode.getValue());
+        currentNode.setValue(value);
+        System.out.println("changing current node with value: " + currentNode.getValue());
+
     }
 
 
@@ -268,8 +378,71 @@ public class LinkedList implements OOSELinkedList {
      * The sorting algorithm should be a different from the one used for the Stack.
      */
     public static OOSELinkedList sort(OOSELinkedList list) {
-        return null;
+        if(list == null){
+            return list;
+        }
+        LinkedList sortedList = mergeSort((LinkedList) list);
+        return sortedList;
+    }
 
+    public static LinkedList mergeSort(LinkedList list){
+
+        if(list.getSize() <= 1){
+            //nothing to sort
+            return list;
+        }
+        //split list in 2
+        LinkedList leftList = new LinkedList();
+        LinkedList rightList = new LinkedList();
+
+        LinkedListNode<Double> currentNode = list.head;
+        int split = list.getSize() / 2;
+        for (int i = 0 ; i < split; i++){
+            leftList.addLast(currentNode.getValue());
+            currentNode = currentNode.getNext();
+        }
+        for (int i = split ; i < list.getSize(); i++){
+            rightList.addLast(currentNode.getValue());
+            currentNode = currentNode.getNext();
+        }
+
+        leftList = mergeSort(leftList);
+        rightList = mergeSort(rightList);
+
+        return merge(leftList, rightList);
+    }
+
+    public static LinkedList merge(LinkedList leftList, LinkedList rightList){
+        LinkedList sortedList = new LinkedList();
+
+        int i = 0;
+        int j = 0;
+
+        while(i < leftList.getSize() && j < rightList.getSize()){
+            if(leftList.get(i) <= rightList.get(j)){
+                sortedList.addLast(leftList.get(i));
+                //System.out.println("New Order: " + leftList.get(i));
+                i++;
+
+            }
+            else{
+                sortedList.addLast(rightList.get(j));
+                //System.out.println("New Order: " + rightList.get(j));
+                j++;
+            }
+        }
+
+        while(i < leftList.getSize()){
+            sortedList.addLast(leftList.get(i));
+            //System.out.println("New Order: " + leftList.get(i));
+            i++;
+        }
+        while(j < rightList.getSize()){
+            sortedList.addLast(rightList.get(j));
+            //System.out.println("New Order: " + rightList.get(j));
+            j++;
+        }
+        return sortedList;
     }
 
     /*
