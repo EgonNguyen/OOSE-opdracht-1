@@ -115,7 +115,7 @@ public class Stack implements OOSEStack {
         return stack;
     }
 
-    public static void sortedInsert(Stack stack, Double element){
+    public static void sortedInsert(Stack stack, Double element) {
 
         if (stack.getSize() == 0 || stack.peek() >= element) {
             stack.push(element);
@@ -130,8 +130,6 @@ public class Stack implements OOSEStack {
         System.out.println("Pushing back: " + temp);
 
     }
-
-
 
 
 }
