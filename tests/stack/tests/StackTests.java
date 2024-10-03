@@ -199,7 +199,6 @@ public class StackTests<T> {
         stack.push(secondElement);
         //8-5-4-1-7-3-6-2
 
-
         OOSEStack result = Stack.sort(stack);
 
         assertEquals(firstElement, result.pop());
