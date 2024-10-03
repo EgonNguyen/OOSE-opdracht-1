@@ -81,11 +81,18 @@ public class LinkedList implements OOSELinkedList {
         LinkedListNode<Double> newNode = new LinkedListNode<>(d);
         if(size > 0){
             //move head to second place
+            newNode.setNext(head);
             head.setPrevious(newNode);
         }
-        //set new head
+        else{
+            //first element in list
+            tail = newNode;
+        }
+        //set head
         head = newNode;
-    }
+        //size increases by 1
+        ++size;
+     }
 
     /**
      * @param d Adds an element to tail of the linked list and increases the size.
@@ -94,6 +101,20 @@ public class LinkedList implements OOSELinkedList {
      */
     @Override
     public void addLast(Double d) {
+        LinkedListNode<Double> newNode = new LinkedListNode<>(d);
+        if(size > 0 && tail !=null){ //a little confused about the test: addLast_should_check_if_tail_null_before_trying_to_remove()
+            //move tail from last place
+            newNode.setPrevious(tail);
+            tail.setNext(newNode);
+        }
+        else{
+            //first element in list
+            head = newNode;
+        }
+        //set new tail
+        tail = newNode;
+        //size increases by 1
+        ++size;
     }
 
     /**
@@ -106,9 +127,79 @@ public class LinkedList implements OOSELinkedList {
      *              TIP: be smart with how you 'move' to the correct element.
      *              Mind the time complexity - O(?)
      */
+
     @Override
-    public void add(int index, Double d) {
+    public void add(int index, Double d) {      //can use some cleanup if time
+        //creating the new node
+        LinkedListNode<Double> newNode = new LinkedListNode<>(d);
+        LinkedListNode<Double> currentNode;
+
+        System.out.println("Start adding node: " + newNode.getValue());
+        System.out.println("with index: " + index +" and size: "+ size);
+
+
+        //check for boundaries
+        if(index > size || index < 0){
+            throw new IndexOutOfBoundsException("index is bigger than size of the list");
+        }
+
+        //start at head if index is small
+        if(index < size/2){
+            System.out.println("Starting from head: " + head.getValue());
+            currentNode = head;
+            for(int i = 0 ; i < index ; i++){
+                if(currentNode.hasNext()){
+                    currentNode = currentNode.getNext();
+                }
+            }
+
+            if(currentNode.hasPrevious()){
+                newNode.setPrevious(currentNode.getPrevious());
+                currentNode.getPrevious().setNext(newNode);
+            }
+            currentNode.setPrevious(newNode);
+            newNode.setNext(currentNode);
+
+
+        }
+        else if(index == size){
+            if(head == null){ //create first node
+                head = newNode;
+                tail = head;
+                System.out.println("created first node: " + head.getValue());
+                System.out.println("created tail node: " + tail.getValue());
+            }
+            else{
+                //new tail
+                tail.setNext(newNode);
+                newNode.setPrevious(tail);
+                tail = newNode;
+                System.out.println("created tail node: " + tail.getValue());
+            }
+        }
+
+        //start at tail if index is big
+        else{
+            System.out.println("Starting from tail: " + tail.getValue());
+            currentNode = tail;
+            for(int i = index; i < size ; i++){
+                if(currentNode.hasPrevious()){
+                    currentNode = currentNode.getPrevious();
+                }
+            }
+
+            if(currentNode.hasNext()){
+                newNode.setNext(currentNode.getNext());
+                currentNode.getNext().setPrevious(newNode);
+            }
+            currentNode.setNext(newNode);
+            newNode.setPrevious(currentNode);
+        }
+        ++size;
+        System.out.println("current size: " + size);
     }
+
+
 
     /**
      * Removes the head of the linked list.
@@ -118,6 +209,21 @@ public class LinkedList implements OOSELinkedList {
      */
     @Override
     public void removeFirst() {
+        if(size == 0){
+            throw new IndexOutOfBoundsException("List is empty, nothing to remove");
+        }
+        else{
+            if(head.hasNext()){ //if there is more than 1 element
+                head.getNext().setPrevious(null); //remove reference to previous node from the new head
+                head = head.getNext(); //set new head
+            }
+            else{
+                //there is only 1 element
+                head = null;
+                tail = null;
+            }
+            --size; //decrease size by 1
+        }
     }
 
     /**
