@@ -1,5 +1,7 @@
 package stack;
 
+import linked.list.LinkedListNode;
+
 import java.util.EmptyStackException;
 
 /**
@@ -21,6 +23,12 @@ public class Stack implements OOSEStack {
      */
     @Override
     public void push(Double d) {
+        StackNode<Double> newNode = new StackNode<>(d);
+        if(top != null){
+            newNode.setNext(top);
+        }
+        top = newNode;
+        ++size;
     }
 
     /**
@@ -30,7 +38,10 @@ public class Stack implements OOSEStack {
      */
     @Override
     public Double peek() {
-        return null;
+        if(top == null){
+            throw new EmptyStackException();
+        }
+        return top.getValue();
     }
 
     /**
@@ -40,7 +51,21 @@ public class Stack implements OOSEStack {
      */
     @Override
     public Double pop() {
-        return null;
+        StackNode<Double> popNode;
+        if(top == null){
+            throw new EmptyStackException();
+        }
+        --size;
+        if(top.hasNext()){
+            popNode = top;
+            top = top.getNext();
+            return popNode.getValue();
+        }
+        else{
+            popNode = top;
+            top = null;
+            return popNode.getValue();
+        }
     }
 
     /**
@@ -48,7 +73,16 @@ public class Stack implements OOSEStack {
      */
     @Override
     public Integer getSize() {
-        return null;
+        if(top == null){
+            return 0;
+        }
+        int size = 1;
+        StackNode<Double> currentNode = top;
+        while(currentNode.hasNext()){
+            ++size;
+            currentNode = currentNode.getNext();
+        }
+        return size;
     }
 
     /**
@@ -59,8 +93,45 @@ public class Stack implements OOSEStack {
      * The sorting algorithm should be a different from the one used for the LinkedList.
      */
     public static OOSEStack sort(OOSEStack stack) {
-        return null;
+        if(stack == null){
+            return stack;
+        }
+        Stack sortedStack = sortStack((Stack) stack);
+        return sortedStack;
 
     }
+    public static Stack sortStack(Stack stack){
+        if(stack.getSize() == 0){
+            return stack;
+        }
+
+        //begin at top
+        Double temp = stack.pop();
+        System.out.println("popping : " + temp);
+
+        sortStack(stack);
+        sortedInsert(stack, temp);
+
+        return stack;
+    }
+
+    public static void sortedInsert(Stack stack, Double element){
+
+        if (stack.getSize() == 0 || stack.peek() >= element) {
+            stack.push(element);
+            System.out.println("Inserting: " + element);
+            return;
+        }
+
+        Double temp = stack.pop();
+        sortedInsert(stack, element);
+
+        stack.push(temp);
+        System.out.println("Pushing back: " + temp);
+
+    }
+
+
+
 
 }

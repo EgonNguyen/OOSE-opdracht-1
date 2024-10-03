@@ -46,6 +46,15 @@ public class LinkedList implements OOSELinkedList {
      */
     @Override
     public Integer getSize() {
+        if(head == null){
+            return 0;
+        }
+        int size = 1;
+        LinkedListNode<Double> currentNode = head;
+        while(currentNode.hasNext()){
+            ++size;
+            currentNode = currentNode.getNext();
+        }
         return size;
     }
 
