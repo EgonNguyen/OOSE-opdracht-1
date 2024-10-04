@@ -19,6 +19,7 @@ public class LinkedList implements OOSELinkedList {
      */
     @Override
     public Double getFirst() {
+
         return null;
     }
 
