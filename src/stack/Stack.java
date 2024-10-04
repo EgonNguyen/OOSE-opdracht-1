@@ -85,7 +85,6 @@ public class Stack implements OOSEStack {
         return size;
     }
 
-
     /**
      * Sorts the stack in ascending order.
      * You can use any existing sorting algorithm like Bubble sort, Merge sort, quick sort etc.
